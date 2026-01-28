@@ -19,7 +19,9 @@
         "start": "pnpm build && electron .",
         "start:dev": "pnpm build:dev && electron .",
         "start:watch": "pnpm build:dev && tsx scripts/startWatch.mts",
-        "test": "pnpm lint && pnpm testTypes",
+        "test": "pnpm lint && pnpm testTypes && pnpm test:unit",
+        "test:unit": "vitest run",
+        "test:watch": "vitest",
         "testTypes": "tsc --noEmit",
         "watch": "pnpm build --watch",
         "generateMeta": "tsx scripts/utils/generateMeta.mts",
@@ -58,6 +60,7 @@
         "type-fest": "^5.4.1",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.53.1",
+        "vitest": "^4.0.18",
         "xml-formatter": "^3.6.7"
     },
     "packageManager": "pnpm@10.7.1",

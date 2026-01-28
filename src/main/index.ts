@@ -17,11 +17,12 @@ import { createFirstLaunchTour } from "./firstLaunch";
 import { createWindows, mainWin } from "./mainWindow";
 import { registerMediaPermissionsHandler } from "./mediaPermissions";
 import { applyOpenAsarCmdSwitches, applyOpenAsarPulseLatency, injectModuleGlobalPaths } from "./openAsar";
+import { profiler } from "./profiler";
 import { registerScreenShareHandler } from "./screenShare";
 import { Settings, State } from "./settings";
 import { setAsDefaultProtocolClient } from "./utils/setAsDefaultProtocolClient";
-import { isDeckGameMode } from "./utils/steamOS";
 
+profiler.start("app-init");
 console.log("Vesktop v" + app.getVersion());
 
 injectModuleGlobalPaths();
@@ -104,8 +105,7 @@ function init() {
         console.log("Disabled Chromium features:", disabledFeaturesArray.join(", "));
     }
 
-    // In the Flatpak on SteamOS the theme is detected as light, but SteamOS only has a dark mode, so we just override it
-    if (isDeckGameMode) nativeTheme.themeSource = "dark";
+    nativeTheme.themeSource = "dark";
 
     app.on("second-instance", (_event, _cmdLine, _cwd, data: any) => {
         if (data.IS_DEV) app.quit();
@@ -117,6 +117,8 @@ function init() {
     });
 
     app.whenReady().then(async () => {
+        profiler.end("app-init");
+        profiler.start("app-ready");
         if (process.platform === "win32") app.setAppUserModelId("dev.vencord.vesktop");
 
         registerScreenShareHandler();
@@ -127,6 +129,7 @@ function init() {
         app.on("activate", () => {
             if (BrowserWindow.getAllWindows().length === 0) createWindows();
         });
+        profiler.end("app-ready");
     });
 }
 

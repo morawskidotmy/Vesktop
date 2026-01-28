@@ -1,12 +1,42 @@
 # Vesktop
 
-Vesktop is a custom Discord desktop app
+[![Test](https://github.com/morawskidotmy/Vesktop/actions/workflows/test.yml/badge.svg)](https://github.com/morawskidotmy/Vesktop/actions/workflows/test.yml)
+[![Boot Time](https://img.shields.io/badge/Boot%20Time-~1.3s-brightgreen)](https://github.com/morawskidotmy/Vesktop)
+[![Memory](https://img.shields.io/badge/Memory-~9MB%20Heap-blue)](https://github.com/morawskidotmy/Vesktop)
+
+Vesktop is a custom Discord desktop app - optimized for speed and performance.
 
 **Main features**:
 - Vencord preinstalled
 - Much more lightweight and faster than the official Discord app
 - Linux Screenshare with sound & wayland
 - Much better privacy, since Discord has no access to your system
+- **Aria2 integration** for fast multi-threaded downloads (16 connections)
+- **Transfer.ng support** for large file uploads (>25MB)
+- **Performance profiler** built-in for boot time analysis
+- **Dark theme only** - optimized for performance
+
+## Performance
+
+Built-in profiler reports on every boot:
+
+```
+=== PERFORMANCE REPORT ===
+Boot Time: ~1300ms
+
+Component Timings:
+  createWindows: ~200ms
+  app-init: ~170ms
+  mainWindow: ~100ms
+  app-ready: ~95ms
+  vencord-main: ~40ms
+  vencord-files: ~12ms
+
+Memory Usage:
+  Heap Used: ~9MB
+  RSS: ~177MB
+========================
+```
 
 **Not yet supported**:
 - Global Keybinds
@@ -25,11 +55,12 @@ You need to have the following dependencies installed:
 - [Git](https://git-scm.com/downloads)
 - [Node.js](https://nodejs.org/en/download)
 - pnpm: `npm install --global pnpm`
+- (Optional) [aria2](https://aria2.github.io/) for fast downloads
 
 Packaging will create builds in the dist/ folder
 
 ```sh
-git clone https://github.com/Vencord/Vesktop
+git clone https://github.com/morawskidotmy/Vesktop
 cd Vesktop
 
 # Install Dependencies
@@ -47,6 +78,39 @@ pnpm package --linux pacman
 # Or package to a directory only
 pnpm package:dir
 ```
+
+## Testing
+
+Run the test suite:
+
+```sh
+# Run all tests (lint + types + unit)
+pnpm test
+
+# Run only unit tests
+pnpm test:unit
+
+# Run tests in watch mode
+pnpm test:watch
+
+# Run linting
+pnpm lint
+
+# Run type checking
+pnpm testTypes
+```
+
+## Settings
+
+### Downloads & Uploads
+- **Enable Aria2 Downloads**: Use aria2c for 16-connection parallel downloads. Files save to ~/Downloads.
+- **Enable Transfer.ng Upload**: Auto-upload files >25MB to transfer.ng and share the link.
+- **Transfer Server URL**: Custom transfer.ng server (default: `https://transfer.morawski.my/`)
+
+### OpenAsar Optimizations
+- Performance Mode (GPU rasterization, zero-copy, hardware overlays)
+- Disable Tracking (blocks Discord analytics)
+- DOM Optimizer (smoother animations)
 
 ## Building LibVesktop from Source
 

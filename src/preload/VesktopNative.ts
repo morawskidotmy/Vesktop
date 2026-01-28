@@ -102,6 +102,16 @@ export const VesktopNative = {
         launchGpu: () => invoke<void>(IpcEvents.DEBUG_LAUNCH_GPU),
         launchWebrtcInternals: () => invoke<void>(IpcEvents.DEBUG_LAUNCH_WEBRTC_INTERNALS)
     },
+    aria2: {
+        isAvailable: () => sendSync<boolean>(IpcEvents.ARIA2_AVAILABLE),
+        download: (url: string, filename?: string, headers?: Record<string, string>) =>
+            invoke<string>(IpcEvents.ARIA2_DOWNLOAD, url, filename, headers)
+    },
+    transferng: {
+        upload: (filePath: string) =>
+            invoke<{ success: boolean; url?: string; error?: string }>(IpcEvents.TRANSFER_NG_UPLOAD, filePath),
+        shouldUpload: (filePath: string) => invoke<boolean>(IpcEvents.TRANSFER_NG_CHECK, filePath)
+    },
     commands: {
         onCommand(cb: (message: IpcMessage) => void) {
             ipcRenderer.on(IpcEvents.IPC_COMMAND, (_, message) => cb(message));
