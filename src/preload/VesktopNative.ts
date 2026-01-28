@@ -53,7 +53,9 @@ export const VesktopNative = {
         showCustomVencordDir: () => invoke<void>(IpcEvents.SHOW_CUSTOM_VENCORD_DIR),
         selectVencordDir: (value?: null) => invoke<"cancelled" | "invalid" | "ok">(IpcEvents.SELECT_VENCORD_DIR, value),
         chooseUserAsset: (asset: string, value?: null) =>
-            invoke<"cancelled" | "invalid" | "ok" | "failed">(IpcEvents.CHOOSE_USER_ASSET, asset, value)
+            invoke<"cancelled" | "invalid" | "ok" | "failed">(IpcEvents.CHOOSE_USER_ASSET, asset, value),
+        showOpenDialog: (options: { properties?: string[] }) =>
+            invoke<{ canceled: boolean; filePaths: string[] }>(IpcEvents.SHOW_OPEN_DIALOG, options)
     },
     settings: {
         get: () => sendSync<Settings>(IpcEvents.GET_SETTINGS),
@@ -110,7 +112,13 @@ export const VesktopNative = {
     transferng: {
         upload: (filePath: string) =>
             invoke<{ success: boolean; url?: string; error?: string }>(IpcEvents.TRANSFER_NG_UPLOAD, filePath),
-        shouldUpload: (filePath: string) => invoke<boolean>(IpcEvents.TRANSFER_NG_CHECK, filePath)
+        shouldUpload: (filePath: string) => invoke<boolean>(IpcEvents.TRANSFER_NG_CHECK, filePath),
+        onProgress: (cb: (progress: number) => void) => {
+            ipcRenderer.on(IpcEvents.TRANSFER_NG_PROGRESS, (_, progress: number) => cb(progress));
+        },
+        offProgress: () => {
+            ipcRenderer.removeAllListeners(IpcEvents.TRANSFER_NG_PROGRESS);
+        }
     },
     commands: {
         onCommand(cb: (message: IpcMessage) => void) {

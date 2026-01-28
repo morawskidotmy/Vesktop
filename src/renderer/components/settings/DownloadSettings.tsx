@@ -37,7 +37,7 @@ export const DownloadSettings: SettingsComponent = () => {
 
             <VesktopSettingsSwitch
                 title="Enable Transfer.ng Upload"
-                description="Automatically upload files larger than 25MB to transfer.ng and share the link instead."
+                description="Automatically upload files larger than 10MB to transfer.ng and share the link instead."
                 value={settings.transferNgEnabled !== false}
                 onChange={v => (Settings.store.transferNgEnabled = v)}
             />

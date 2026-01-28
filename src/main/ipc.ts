@@ -163,6 +163,13 @@ handle(IpcEvents.SELECT_VENCORD_DIR, async (_e, value?: null) => {
 
 handle(IpcEvents.SET_BADGE_COUNT, (_, count: number) => setBadgeCount(count));
 
+handle(IpcEvents.SHOW_OPEN_DIALOG, async (_e, options: { properties?: string[] }) => {
+    const res = await dialog.showOpenDialog(mainWin!, {
+        properties: (options.properties as any) || ["openFile"]
+    });
+    return { canceled: res.canceled, filePaths: res.filePaths };
+});
+
 handle(IpcEvents.FLASH_FRAME, (_, flag: boolean) => {
     if (!mainWin || mainWin.isDestroyed() || (flag && mainWin.isFocused())) return;
     mainWin.flashFrame(flag);
@@ -191,8 +198,10 @@ handle(IpcEvents.ARIA2_DOWNLOAD, async (_, url: string, filename?: string, heade
     return downloadWithAria2({ url, filename, headers });
 });
 
-handle(IpcEvents.TRANSFER_NG_UPLOAD, async (_, filePath: string) => {
-    return uploadToTransferNg(filePath);
+handle(IpcEvents.TRANSFER_NG_UPLOAD, async (e, filePath: string) => {
+    return uploadToTransferNg(filePath, progress => {
+        e.sender.send(IpcEvents.TRANSFER_NG_PROGRESS, progress);
+    });
 });
 
 handle(IpcEvents.TRANSFER_NG_CHECK, async (_, filePath: string) => {
