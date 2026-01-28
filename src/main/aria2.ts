@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { spawn } from "child_process";
+import { spawn, spawnSync } from "child_process";
 import { existsSync, mkdirSync } from "fs";
 import { homedir } from "os";
 import { join } from "path";
@@ -98,8 +98,7 @@ export function downloadWithAria2(options: Aria2DownloadOptions): Promise<string
 
 export function isAria2Available(): boolean {
     try {
-        const result = spawn("aria2c", ["--version"], { stdio: "pipe" });
-        return true;
+        return spawnSync("aria2c", ["--version"], { stdio: "pipe" }).status === 0;
     } catch {
         return false;
     }

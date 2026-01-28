@@ -26,21 +26,26 @@ export function createSplashWindow(startMinimized = false) {
 
     const { splashBackground, splashColor, splashTheming, splashPixelated } = Settings.store;
 
+    const cssRules: string[] = [];
+
     if (splashTheming !== false) {
         if (splashColor) {
             const semiTransparentSplashColor = splashColor.replace("rgb(", "rgba(").replace(")", ", 0.2)");
-
-            splash.webContents.insertCSS(`body { --fg: ${splashColor} !important }`);
-            splash.webContents.insertCSS(`body { --fg-semi-trans: ${semiTransparentSplashColor} !important }`);
+            cssRules.push(
+                `body { --fg: ${splashColor} !important; --fg-semi-trans: ${semiTransparentSplashColor} !important }`
+            );
         }
-
         if (splashBackground) {
-            splash.webContents.insertCSS(`body { --bg: ${splashBackground} !important }`);
+            cssRules.push(`body { --bg: ${splashBackground} !important }`);
         }
     }
 
     if (splashPixelated) {
-        splash.webContents.insertCSS(`img { image-rendering: pixelated; }`);
+        cssRules.push(`img { image-rendering: pixelated }`);
+    }
+
+    if (cssRules.length > 0) {
+        splash.webContents.insertCSS(cssRules.join("\n"));
     }
 
     return splash;

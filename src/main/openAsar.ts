@@ -42,21 +42,18 @@ export function applyOpenAsarCmdSwitches(): void {
         flagsToApply.push(...openAsar.customFlags.split(" ").filter(Boolean));
     }
 
-    const parsed: Record<string, string[]> = {};
-    for (const flag of flagsToApply) {
-        if (!flag) continue;
-        const [key, value] = flag.split("=");
-        const cleanKey = key.replace("--", "");
-        (parsed[cleanKey] = parsed[cleanKey] || []).push(value);
-    }
+    const parsed = flagsToApply.reduce<Record<string, string[]>>((acc, flag) => {
+        if (!flag) return acc;
+        const eqIndex = flag.indexOf("=");
+        const cleanKey = (eqIndex === -1 ? flag : flag.slice(0, eqIndex)).replace(/^--/, "");
+        const value = eqIndex === -1 ? undefined : flag.slice(eqIndex + 1);
+        (acc[cleanKey] ??= []).push(value!);
+        return acc;
+    }, {});
 
     for (const [key, values] of Object.entries(parsed)) {
         const value = values.filter(Boolean).join(",");
-        if (value) {
-            app.commandLine.appendSwitch(key, value);
-        } else {
-            app.commandLine.appendSwitch(key);
-        }
+        app.commandLine.appendSwitch(key, value || undefined!);
     }
 }
 

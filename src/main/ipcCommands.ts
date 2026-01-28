@@ -51,11 +51,6 @@ ipcMain.on(IpcEvents.IPC_COMMAND, (_event, { nonce, ok, data }: IpcResponse) => 
     const resolver = resolvers.get(nonce);
     if (!resolver) throw new Error(`Unknown message: ${nonce}`);
 
-    if (ok) {
-        resolver.resolve(data);
-    } else {
-        resolver.reject(data);
-    }
-
+    resolver[ok ? "resolve" : "reject"](data);
     resolvers.delete(nonce);
 });

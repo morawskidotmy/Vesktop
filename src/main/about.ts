@@ -10,14 +10,11 @@ import { makeLinksOpenExternally } from "./utils/makeLinksOpenExternally";
 import { loadView } from "./vesktopStatic";
 
 export async function createAboutWindow() {
-    const height = 750;
-    const width = height * (4 / 3);
-
     const about = new BrowserWindow({
         center: true,
         autoHideMenuBar: true,
-        height,
-        width
+        height: 750,
+        width: 1000
     });
 
     makeLinksOpenExternally(about);

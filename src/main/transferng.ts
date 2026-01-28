@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { createReadStream } from "fs";
-import { stat } from "fs/promises";
+import { readFile, stat } from "fs/promises";
 import { basename } from "path";
 
 import { Settings } from "./settings";
@@ -38,16 +37,9 @@ export function isFileTooLargeForDiscord(fileSize: number): boolean {
 
 export async function uploadToTransferNg(filePath: string): Promise<UploadResult> {
     try {
-        const fileSize = await getFileSize(filePath);
         const fileName = basename(filePath);
-        const fileStream = createReadStream(filePath);
         const server = getTransferServer();
-
-        const chunks: Buffer[] = [];
-        for await (const chunk of fileStream) {
-            chunks.push(chunk as Buffer);
-        }
-        const fileBuffer = Buffer.concat(chunks);
+        const fileBuffer = await readFile(filePath);
 
         const serverUrl = server.endsWith("/") ? server : server + "/";
         const response = await fetch(serverUrl + fileName, {
@@ -55,7 +47,7 @@ export async function uploadToTransferNg(filePath: string): Promise<UploadResult
             body: fileBuffer,
             headers: {
                 "Content-Type": "application/octet-stream",
-                "Content-Length": fileSize.toString()
+                "Content-Length": fileBuffer.length.toString()
             }
         });
 
