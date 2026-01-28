@@ -4,13 +4,16 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { readFile, stat } from "fs/promises";
+import { createReadStream, stat as fsStat } from "fs";
+import { stat } from "fs/promises";
+import http from "http";
+import https from "https";
 import { basename } from "path";
 
 import { Settings } from "./settings";
 
 const DEFAULT_TRANSFER_NG_SERVER = "https://transfer.morawski.my/";
-const DISCORD_FILE_LIMIT = 25 * 1024 * 1024;
+const TRANSFER_NG_THRESHOLD = 10 * 1024 * 1024;
 
 function getTransferServer(): string {
     return Settings.store.transferNgServer || DEFAULT_TRANSFER_NG_SERVER;
@@ -26,55 +29,82 @@ export interface UploadResult {
     error?: string;
 }
 
+export type ProgressCallback = (progress: number) => void;
+
 export async function getFileSize(filePath: string): Promise<number> {
     const stats = await stat(filePath);
     return stats.size;
 }
 
-export function isFileTooLargeForDiscord(fileSize: number): boolean {
-    return fileSize > DISCORD_FILE_LIMIT;
+export function shouldUseTransferNg(fileSize: number): boolean {
+    return fileSize > TRANSFER_NG_THRESHOLD;
 }
 
-export async function uploadToTransferNg(filePath: string): Promise<UploadResult> {
-    try {
-        const fileName = basename(filePath);
-        const server = getTransferServer();
-        const fileBuffer = await readFile(filePath);
-
-        const serverUrl = server.endsWith("/") ? server : server + "/";
-        const response = await fetch(serverUrl + fileName, {
-            method: "PUT",
-            body: fileBuffer,
-            headers: {
-                "Content-Type": "application/octet-stream",
-                "Content-Length": fileBuffer.length.toString()
+export async function uploadToTransferNg(filePath: string, onProgress?: ProgressCallback): Promise<UploadResult> {
+    return new Promise(resolve => {
+        fsStat(filePath, (err, stats) => {
+            if (err) {
+                resolve({ success: false, error: err.message });
+                return;
             }
-        });
 
-        if (!response.ok) {
-            return {
-                success: false,
-                error: `Upload failed: ${response.status} ${response.statusText}`
+            const fileSize = stats.size;
+            const fileName = basename(filePath);
+            const server = getTransferServer();
+            const serverUrl = server.endsWith("/") ? server : server + "/";
+            const url = new URL(serverUrl + encodeURIComponent(fileName));
+
+            const isHttps = url.protocol === "https:";
+            const lib = isHttps ? https : http;
+
+            const options = {
+                hostname: url.hostname,
+                port: url.port || (isHttps ? 443 : 80),
+                path: url.pathname,
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/octet-stream",
+                    "Content-Length": fileSize
+                }
             };
-        }
 
-        const url = await response.text();
-        return {
-            success: true,
-            url: url.trim()
-        };
-    } catch (error) {
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : String(error)
-        };
-    }
+            const req = lib.request(options, res => {
+                let data = "";
+                res.on("data", chunk => (data += chunk));
+                res.on("end", () => {
+                    if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+                        resolve({ success: true, url: data.trim() });
+                    } else {
+                        resolve({
+                            success: false,
+                            error: `Upload failed: ${res.statusCode} ${res.statusMessage}`
+                        });
+                    }
+                });
+            });
+
+            req.on("error", error => {
+                resolve({ success: false, error: error.message });
+            });
+
+            const fileStream = createReadStream(filePath);
+            let uploaded = 0;
+
+            fileStream.on("data", chunk => {
+                uploaded += chunk.length;
+                const progress = Math.round((uploaded / fileSize) * 100);
+                onProgress?.(progress);
+            });
+
+            fileStream.pipe(req);
+        });
+    });
 }
 
 export async function shouldUploadToTransferNg(filePath: string): Promise<boolean> {
     try {
         const fileSize = await getFileSize(filePath);
-        return isFileTooLargeForDiscord(fileSize);
+        return shouldUseTransferNg(fileSize);
     } catch {
         return false;
     }
@@ -84,6 +114,6 @@ export function getTransferNgServer(): string {
     return getTransferServer();
 }
 
-export function getDiscordFileLimit(): number {
-    return DISCORD_FILE_LIMIT;
+export function getTransferNgThreshold(): number {
+    return TRANSFER_NG_THRESHOLD;
 }
