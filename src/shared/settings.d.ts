@@ -31,6 +31,10 @@ export interface Settings {
     splashBackground?: string;
     splashPixelated?: boolean;
 
+    aria2Enabled?: boolean;
+    transferNgEnabled?: boolean;
+    transferNgServer?: string;
+
     spellCheckLanguages?: string[];
 
     openAsarEnabled?: boolean;

@@ -29,6 +29,7 @@ import { AppEvents } from "./events";
 import { darwinURL } from "./index";
 import { sendRendererCommand } from "./ipcCommands";
 import { getOpenAsarDomOptimizerScript, getOpenAsarNoTrackScript, setupOpenAsarWebRequestBlocking } from "./openAsar";
+import { profiler } from "./profiler";
 import { Settings, State, VencordSettings } from "./settings";
 import { createSplashWindow, updateSplashMessage } from "./splash";
 import { destroyTray, initTray } from "./tray";
@@ -405,22 +406,21 @@ function createMainWindow() {
     });
 
     initWindowBoundsListeners(win);
-    if (!isDeckGameMode && (Settings.store.tray ?? true) && process.platform !== "darwin")
-        initTray(win, q => (isQuitting = q));
-
     initMenuBar(win);
     makeLinksOpenExternally(win);
-    initSettingsListeners(win);
-    initSpellCheck(win);
-    initDevtoolsListeners(win);
     initStaticTitle(win);
 
     win.webContents.setUserAgent(BrowserUserAgent);
 
-    // if the open-url event is fired (in index.ts) while starting up, darwinURL will be set. If not fall back to checking the process args (which Windows and Linux use for URI calling.)
-    // win.webContents.session.clearCache().then(() => {
     loadUrl(darwinURL || process.argv.find(arg => arg.startsWith("discord://")));
-    // });
+
+    setImmediate(() => {
+        if (!isDeckGameMode && (Settings.store.tray ?? true) && process.platform !== "darwin")
+            initTray(win, q => (isQuitting = q));
+        initSettingsListeners(win);
+        initSpellCheck(win);
+        initDevtoolsListeners(win);
+    });
 
     return win;
 }
@@ -446,21 +446,32 @@ function retryUrl(url: string, description: string) {
 }
 
 export async function createWindows() {
+    profiler.start("createWindows");
     const startMinimized = CommandLine.values["start-minimized"];
 
     let splash: BrowserWindow | undefined;
     if (Settings.store.enableSplashScreen !== false) {
+        profiler.start("splash");
         splash = createSplashWindow(startMinimized);
+        profiler.end("splash");
 
         if (isDeckGameMode) splash.setFullScreen(true);
     }
 
+    profiler.start("vencord-files");
     await ensureVencordFiles();
+    profiler.end("vencord-files");
+    profiler.start("vencord-main");
     runVencordMain();
+    profiler.end("vencord-main");
 
+    profiler.start("mainWindow");
     mainWin = createMainWindow();
+    profiler.end("mainWindow");
 
     AppEvents.on("appLoaded", () => {
+        profiler.markBootComplete();
+        profiler.printReport();
         splash?.destroy();
 
         if (!startMinimized) {
@@ -483,9 +494,8 @@ export async function createWindows() {
     });
 
     mainWin.webContents.on("did-navigate", (_, url: string, responseCode: number) => {
-        updateSplashMessage(""); // clear the splash message
+        updateSplashMessage("");
 
-        // check url to ensure app doesn't loop
         if (responseCode >= 300 && new URL(url).pathname !== `/app`) {
             loadUrl(undefined);
             console.warn(`'did-navigate': Caught bad page response: ${responseCode}, redirecting to main app`);
@@ -493,4 +503,5 @@ export async function createWindows() {
     });
 
     initArRPC();
+    profiler.end("createWindows");
 }

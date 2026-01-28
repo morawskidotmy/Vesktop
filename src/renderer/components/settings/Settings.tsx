@@ -15,6 +15,7 @@ import { isMac, isWindows } from "renderer/utils";
 import { AutoStartToggle } from "./AutoStartToggle";
 import { DeveloperOptionsButton } from "./DeveloperOptions";
 import { DiscordBranchPicker } from "./DiscordBranchPicker";
+import { DownloadSettings } from "./DownloadSettings";
 import { NotificationBadgeToggle } from "./NotificationBadgeToggle";
 import { OpenAsarSettings } from "./OpenAsarSettings";
 import { OutdatedVesktopWarning } from "./OutdatedVesktopWarning";
@@ -79,13 +80,13 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
             title: "Enable Splash Screen",
             description:
                 "Shows a small splash screen while Vesktop is loading. Disabling this option will show the main window earlier while it's still loading.",
-            defaultValue: true
+            defaultValue: false
         },
         {
             key: "splashTheming",
             title: "Splash theming",
             description: "Adapt the splash window colors to your custom theme",
-            defaultValue: true
+            defaultValue: false
         },
         WindowsTransparencyControls,
         UserAssetsButton
@@ -149,6 +150,7 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
             defaultValue: false
         }
     ],
+    "Downloads & Uploads": [DownloadSettings],
     "OpenAsar Optimizations": [OpenAsarSettings],
     "Developer Options": [DeveloperOptionsButton]
 };
