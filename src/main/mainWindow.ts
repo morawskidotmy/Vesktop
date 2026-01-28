@@ -465,24 +465,18 @@ export async function createWindows() {
     runVencordMain();
     profiler.end("vencord-main");
 
-    profiler.start("mainWindow");
-    mainWin = createMainWindow();
-    profiler.end("mainWindow");
-
-    AppEvents.on("appLoaded", () => {
+    AppEvents.once("appLoaded", () => {
         profiler.markBootComplete();
         profiler.printReport();
         splash?.destroy();
 
         if (!startMinimized) {
-            if (splash) mainWin!.show();
+            mainWin!.show();
             if (State.store.maximized && !isDeckGameMode) mainWin!.maximize();
         }
 
         if (isDeckGameMode) {
-            // always use entire display
             mainWin!.setFullScreen(true);
-
             askToApplySteamLayout(mainWin);
         }
 
@@ -492,6 +486,10 @@ export async function createWindows() {
             }
         });
     });
+
+    profiler.start("mainWindow");
+    mainWin = createMainWindow();
+    profiler.end("mainWindow");
 
     mainWin.webContents.on("did-navigate", (_, url: string, responseCode: number) => {
         updateSplashMessage("");
