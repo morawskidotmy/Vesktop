@@ -55,9 +55,7 @@ function openUpdater(update: UpdateInfo) {
     makeLinksOpenExternally(updaterWindow);
 
     handle(UpdaterIpcEvents.GET_DATA, () => ({ update, version: app.getVersion() }));
-    handle(UpdaterIpcEvents.INSTALL, async () => {
-        await autoUpdater.downloadUpdate();
-    });
+    handle(UpdaterIpcEvents.INSTALL, () => autoUpdater.downloadUpdate());
     handle(UpdaterIpcEvents.SNOOZE_UPDATE, () => {
         State.store.updater ??= {};
         State.store.updater.snoozeUntil = Date.now() + 1 * Millis.DAY;

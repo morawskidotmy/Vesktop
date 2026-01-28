@@ -157,16 +157,18 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
 
 function SettingsSections() {
     const Settings = useSettings();
+    const entries = Object.entries(SettingsOptions);
+    const lastIndex = entries.length - 1;
 
-    const sections = Object.entries(SettingsOptions).map(([title, settings], i, arr) => (
+    return entries.map(([title, settings], i) => (
         <div key={title} className={cl("category")}>
             <BaseText size="lg" weight="semibold" tag="h3" className={cl("category-title")}>
                 {title}
             </BaseText>
 
             <div className={cl("category-content")}>
-                {settings.map((Setting, i) => {
-                    if (typeof Setting === "function") return <Setting key={`Custom-${i}`} settings={Settings} />;
+                {settings.map((Setting, j) => {
+                    if (typeof Setting === "function") return <Setting key={`Custom-${j}`} settings={Settings} />;
 
                     const { defaultValue, title, description, key, disabled, invisible } = Setting;
                     if (invisible?.()) return null;
@@ -184,11 +186,9 @@ function SettingsSections() {
                 })}
             </div>
 
-            {i < arr.length - 1 && <Divider className={cl("category-divider")} />}
+            {i < lastIndex && <Divider className={cl("category-divider")} />}
         </div>
     ));
-
-    return <>{sections}</>;
 }
 
 export default ErrorBoundary.wrap(

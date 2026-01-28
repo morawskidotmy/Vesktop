@@ -24,8 +24,6 @@ export async function downloadFile(url: string, file: string, options: RequestIn
     );
 }
 
-const ONE_MINUTE_MS = 1000 * 60;
-
 export async function fetchie(url: string, options?: RequestInit, { retryOnNetworkError }: FetchieOptions = {}) {
     let res: Response | undefined;
 
@@ -35,7 +33,7 @@ export async function fetchie(url: string, options?: RequestInit, { retryOnNetwo
         if (retryOnNetworkError) {
             console.error("Failed to fetch", url + ".", "Gonna retry with backoff.");
 
-            for (let tries = 0, delayMs = 500; tries < 20; tries++, delayMs = Math.min(2 * delayMs, ONE_MINUTE_MS)) {
+            for (let tries = 0, delayMs = 500; tries < 20; tries++, delayMs = Math.min(2 * delayMs, 60000)) {
                 await setTimeout(delayMs);
                 try {
                     res = await fetch(url, options);
@@ -49,10 +47,6 @@ export async function fetchie(url: string, options?: RequestInit, { retryOnNetwo
 
     if (res.ok) return res;
 
-    let msg = `Got non-OK response for ${url}: ${res.status} ${res.statusText}`;
-
     const reason = await res.text().catch(() => "");
-    if (reason) msg += `\n${reason}`;
-
-    throw new Error(msg);
+    throw new Error(`Got non-OK response for ${url}: ${res.status} ${res.statusText}${reason ? `\n${reason}` : ""}`);
 }

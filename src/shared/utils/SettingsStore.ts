@@ -39,13 +39,14 @@ export class SettingsStore<T extends object> {
 
     private makeProxy(object: any, root: T = object, path: string = "") {
         const self = this;
+        const pathPrefix = path ? path + "." : "";
 
         return new Proxy(object, {
             get(target, key: string) {
                 const v = target[key];
 
                 if (typeof v === "object" && v !== null && !Array.isArray(v))
-                    return self.makeProxy(v, root, `${path}${path && "."}${key}`);
+                    return self.makeProxy(v, root, pathPrefix + key);
 
                 return v;
             },
@@ -53,7 +54,7 @@ export class SettingsStore<T extends object> {
                 if (target[key] === value) return true;
 
                 Reflect.set(target, key, value);
-                const setPath = `${path}${path && "."}${key}`;
+                const setPath = pathPrefix + key;
 
                 self.globalListeners.forEach(cb => cb(root, setPath));
                 self.pathListeners.get(setPath)?.forEach(cb => cb(value));
@@ -66,7 +67,7 @@ export class SettingsStore<T extends object> {
                 const res = Reflect.deleteProperty(target, key);
                 if (!res) return false;
 
-                const setPath = `${path}${path && "."}${key}`;
+                const setPath = pathPrefix + key;
 
                 self.globalListeners.forEach(cb => cb(root, setPath));
                 self.pathListeners.get(setPath)?.forEach(cb => cb(undefined));

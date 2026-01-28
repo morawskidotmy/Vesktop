@@ -121,13 +121,7 @@ export const OpenAsarSettings: SettingsComponent = () => {
                         />
                     </div>
 
-                    <Button
-                        onClick={() => {
-                            VesktopNative.app.relaunch();
-                        }}
-                    >
-                        Restart Vesktop
-                    </Button>
+                    <Button onClick={VesktopNative.app.relaunch}>Restart Vesktop</Button>
                 </>
             )}
         </div>

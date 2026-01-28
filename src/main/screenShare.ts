@@ -49,16 +49,14 @@ export function registerScreenShareHandler() {
 
         if (isWayland) {
             const video = data[0];
-            if (video) {
-                const stream = await sendRendererCommand<StreamPick>(IpcCommands.SCREEN_SHARE_PICKER, {
-                    screens: [video],
-                    skipPicker: true
-                }).catch(() => null);
+            if (!video) return callback({});
 
-                if (stream === null) return callback({});
-            }
+            const stream = await sendRendererCommand<StreamPick>(IpcCommands.SCREEN_SHARE_PICKER, {
+                screens: [video],
+                skipPicker: true
+            }).catch(() => null);
 
-            callback(video ? { video: sources[0] } : {});
+            callback(stream ? { video: sources[0] } : {});
             return;
         }
 

@@ -18,13 +18,12 @@ const STATE_FILE = join(DATA_DIR, "state.json");
 function loadSettings<T extends object = any>(file: string, name: string) {
     let settings = {} as T;
     try {
-        const content = readFileSync(file, "utf8");
-        try {
-            settings = JSON.parse(content);
-        } catch (err) {
-            console.error(`Failed to parse ${name}.json:`, err);
+        settings = JSON.parse(readFileSync(file, "utf8"));
+    } catch (err) {
+        if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+            console.error(`Failed to load ${name}.json:`, err);
         }
-    } catch {}
+    }
 
     const store = new SettingsStore(settings);
     store.addGlobalChangeListener(o => {

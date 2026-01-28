@@ -58,7 +58,7 @@ export async function initArRPC() {
                 case "link": {
                     const response: ArRpcHostEvent = {
                         type: "ack-link",
-                        nonce: nonce,
+                        nonce,
                         data: false
                     };
 
