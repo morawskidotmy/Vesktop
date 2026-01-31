@@ -1,40 +1,150 @@
 <!doctype html>
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <title>Vesktop Setup</title>
-<link rel="stylesheet" href="./common.css">
+<link rel="stylesheet" href="./common.css" />
 <style>
-body{height:100vh;padding:1.5em;padding-bottom:1em;border:1px solid var(--fg-semi-trans);border-top:none;display:flex;flex-direction:column;box-sizing:border-box}
-select{background:var(--bg);color:var(--fg);padding:0.3em;margin:-0.3em;border-radius:6px;cursor:pointer}
-h1{margin:0.4em 0 0}
-p{margin:1em 0 2em}
-form{display:grid;gap:1em;margin:0}
-label{position:relative;display:flex;justify-content:space-between;cursor:pointer}
-label:not(:last-child)::after{content:"";position:absolute;bottom:-10px;width:100%;height:1px;background-color:var(--fg-secondary);opacity:0.5}
-label div{display:grid;gap:0.2em}
-label h2{margin:0;font-weight:normal;font-size:1.1rem;line-height:1rem}
-label span{font-size:0.9rem;font-weight:400;color:var(--fg-secondary)}
-#buttons{display:flex;justify-content:end;gap:0.5em;margin-top:auto}
-button{padding:0.6em;color:white;border-radius:6px;border:none;cursor:pointer}
-button:hover{filter:brightness(0.8)}
-#cancel{background:red}
-#submit{background:green}
+    body {
+        height: 100vh;
+        padding: 1.5em;
+        padding-bottom: 1em;
+        border: 1px solid var(--fg-semi-trans);
+        border-top: none;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+    select {
+        background: var(--bg);
+        color: var(--fg);
+        padding: 0.3em;
+        margin: -0.3em;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+    h1 {
+        margin: 0.4em 0 0;
+    }
+    p {
+        margin: 1em 0 2em;
+    }
+    form {
+        display: grid;
+        gap: 1em;
+        margin: 0;
+    }
+    label {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+    }
+    label:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        width: 100%;
+        height: 1px;
+        background-color: var(--fg-secondary);
+        opacity: 0.5;
+    }
+    label div {
+        display: grid;
+        gap: 0.2em;
+    }
+    label h2 {
+        margin: 0;
+        font-weight: normal;
+        font-size: 1.1rem;
+        line-height: 1rem;
+    }
+    label span {
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: var(--fg-secondary);
+    }
+    #buttons {
+        display: flex;
+        justify-content: end;
+        gap: 0.5em;
+        margin-top: auto;
+    }
+    button {
+        padding: 0.6em;
+        color: white;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+    }
+    button:hover {
+        filter: brightness(0.8);
+    }
+    #cancel {
+        background: red;
+    }
+    #submit {
+        background: green;
+    }
 </style>
 <body>
-<h1>Welcome to Vesktop</h1>
-<p>Let's customise your experience!</p>
-<form>
-<label><h2>Discord Branch</h2><select name="discordBranch"><option value="stable">stable</option><option value="canary">canary</option><option value="ptb">ptb</option></select></label>
-<label><div><h2>Start with System</h2><span>Automatically open Vesktop when your computer starts</span></div><input type="checkbox" name="autoStart"></label>
-<label><div><h2>Rich Presence</h2><span>Enable Rich presence via arRPC</span></div><input type="checkbox" name="richPresence" checked></label>
-<label><div><h2>Import Settings</h2><span>Import Settings from existing Vencord install</span></div><input type="checkbox" name="importSettings" checked></label>
-<label><div><h2>Minimise to Tray</h2><span>Minimise to Tray when closing</span></div><input type="checkbox" name="minimizeToTray" checked></label>
-<label><div><h2>OpenAsar Optimizations</h2><span>Enable performance optimizations</span></div><input type="checkbox" name="openAsar" checked></label>
-</form>
-<div id="buttons">
-<button id="cancel">Quit</button>
-<button id="submit">Submit</button>
-</div>
+    <h1>Welcome to Vesktop</h1>
+    <p>Let's customise your experience!</p>
+    <form>
+        <label
+            ><h2>Discord Branch</h2>
+            <select name="discordBranch">
+                <option value="stable">stable</option>
+                <option value="canary">canary</option>
+                <option value="ptb">ptb</option>
+            </select></label
+        >
+        <label
+            ><div>
+                <h2>Start with System</h2>
+                <span>Automatically open Vesktop when your computer starts</span>
+            </div>
+            <input type="checkbox" name="autoStart"
+        /></label>
+        <label
+            ><div>
+                <h2>Rich Presence</h2>
+                <span>Enable Rich presence via arRPC</span>
+            </div>
+            <input type="checkbox" name="richPresence" checked
+        /></label>
+        <label
+            ><div>
+                <h2>Import Settings</h2>
+                <span>Import Settings from existing Vencord install</span>
+            </div>
+            <input type="checkbox" name="importSettings" checked
+        /></label>
+        <label
+            ><div>
+                <h2>Minimise to Tray</h2>
+                <span>Minimise to Tray when closing</span>
+            </div>
+            <input type="checkbox" name="minimizeToTray" checked
+        /></label>
+        <label
+            ><div>
+                <h2>OpenAsar Optimizations</h2>
+                <span>Enable performance optimizations</span>
+            </div>
+            <input type="checkbox" name="openAsar" checked
+        /></label>
+    </form>
+    <div id="buttons">
+        <button id="cancel">Quit</button>
+        <button id="submit">Submit</button>
+    </div>
 </body>
 <script>
-cancel.onclick=()=>console.info("cancel");submit.onclick=e=>{const f=document.querySelector("form");const d=new FormData(f);const o=Object.fromEntries(d.entries());console.info("form:"+JSON.stringify(o));e.preventDefault()};
+    cancel.onclick = () => console.info("cancel");
+    submit.onclick = e => {
+        const f = document.querySelector("form");
+        const d = new FormData(f);
+        const o = Object.fromEntries(d.entries());
+        console.info("form:" + JSON.stringify(o));
+        e.preventDefault();
+    };
 </script>

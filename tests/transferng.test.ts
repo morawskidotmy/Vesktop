@@ -42,11 +42,7 @@ describe("Transfer.ng Module", () => {
     });
 
     it("should handle custom server URLs", () => {
-        const customServers = [
-            "https://custom.transfer.io/",
-            "https://my-server.com",
-            "https://transfer.example.org/"
-        ];
+        const customServers = ["https://custom.transfer.io/", "https://my-server.com", "https://transfer.example.org/"];
 
         for (const server of customServers) {
             const serverUrl = server.endsWith("/") ? server : server + "/";

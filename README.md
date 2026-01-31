@@ -7,6 +7,7 @@
 Vesktop is a custom Discord desktop app - optimized for speed and performance.
 
 **Main features**:
+
 - Vencord preinstalled
 - Much more lightweight and faster than the official Discord app
 - Linux Screenshare with sound & wayland
@@ -39,6 +40,7 @@ Memory Usage:
 ```
 
 **Not yet supported**:
+
 - Global Keybinds
 - see the [Roadmap](https://github.com/Vencord/Vesktop/issues/324)
 
@@ -52,6 +54,7 @@ Visit https://vesktop.dev/install
 ## Building from Source
 
 You need to have the following dependencies installed:
+
 - [Git](https://git-scm.com/downloads)
 - [Node.js](https://nodejs.org/en/download)
 - pnpm: `npm install --global pnpm`
@@ -103,11 +106,13 @@ pnpm testTypes
 ## Settings
 
 ### Downloads & Uploads
+
 - **Enable Aria2 Downloads**: Use aria2c for 16-connection parallel downloads. Files save to ~/Downloads.
 - **Enable Transfer.ng Upload**: Auto-upload files >25MB to transfer.ng and share the link.
 - **Transfer Server URL**: Custom transfer.ng server (default: `https://transfer.morawski.my/`)
 
 ### OpenAsar Optimizations
+
 - Performance Mode (GPU rasterization, zero-copy, hardware overlays)
 - Disable Tracking (blocks Discord analytics)
 - DOM Optimizer (smoother animations)
@@ -117,6 +122,7 @@ pnpm testTypes
 This is a small C++ helper library Vesktop uses on Linux to emit D-Bus events. By default, prebuilt binaries for x64 and arm64 are used.
 
 If you want to build it from source:
+
 1. Install build dependencies:
     - Debian/Ubuntu: `apt install build-essential python3 curl pkg-config libglib2.0-dev`
     - Fedora: `dnf install @c-development @development-tools python3 curl pkgconf-pkg-config glib2-devel`
