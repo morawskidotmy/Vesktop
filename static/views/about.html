@@ -1,27 +1,46 @@
 <!doctype html>
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <title>About Vesktop</title>
-<link rel="stylesheet" href="./common.css">
+<link rel="stylesheet" href="./common.css" />
 <style>
-body{padding:2em}
-h1{text-align:center}
-ul{display:flex;flex-direction:column;gap:0.5em}
+    body {
+        padding: 2em;
+    }
+    h1 {
+        text-align: center;
+    }
+    ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+    }
 </style>
 <body>
-<h1 id="title">Vesktop v{{APP_VERSION}}</h1>
-<p>Vesktop is a cross platform Discord Desktop client</p>
-<section>
-<h2>Links</h2>
-<ul>
-<li><a href="https://vesktop.dev" target="_blank">Vesktop Website</a></li>
-<li><a href="https://github.com/Vencord/Vesktop" target="_blank">Source Code</a></li>
-</ul>
-</section>
-<section>
-<h2>License</h2>
-<p>Vesktop is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.txt" target="_blank">GNU General Public License v3.0</a>.</p>
-</section>
+    <h1 id="title">Vesktop v{{APP_VERSION}}</h1>
+    <p>Vesktop is a cross platform Discord Desktop client</p>
+    <section>
+        <h2>Links</h2>
+        <ul>
+            <li><a href="https://vesktop.dev" target="_blank">Vesktop Website</a></li>
+            <li><a href="https://github.com/Vencord/Vesktop" target="_blank">Source Code</a></li>
+        </ul>
+    </section>
+    <section>
+        <h2>License</h2>
+        <p>
+            Vesktop is licensed under the
+            <a href="https://www.gnu.org/licenses/gpl-3.0.txt" target="_blank">GNU General Public License v3.0</a>.
+        </p>
+    </section>
 </body>
 <script>
-const d=new URLSearchParams(location.search);function w(n){if(n.nodeType===Node.TEXT_NODE){n.textContent=n.textContent.replace(/\{\{(\w+)\}\}/g,(m,k)=>d.get(k)||m);return}if(n.nodeType===Node.ELEMENT_NODE&&n.nodeName!=="SCRIPT")for(const c of n.childNodes)w(c)}w(document.body);
+    const d = new URLSearchParams(location.search);
+    function w(n) {
+        if (n.nodeType === Node.TEXT_NODE) {
+            n.textContent = n.textContent.replace(/\{\{(\w+)\}\}/g, (m, k) => d.get(k) || m);
+            return;
+        }
+        if (n.nodeType === Node.ELEMENT_NODE && n.nodeName !== "SCRIPT") for (const c of n.childNodes) w(c);
+    }
+    w(document.body);
 </script>
