@@ -86,8 +86,8 @@ function init() {
     disabledFeatures.add("MediaSessionService");
 
     if (isLinux) {
-        // Support TTS on Linux using https://wiki.archlinux.org/title/Speech_dispatcher
         app.commandLine.appendSwitch("enable-speech-dispatcher");
+        app.commandLine.appendSwitch("use-gl", "desktop");
     }
 
     disabledFeatures.forEach(feat => enabledFeatures.delete(feat));
