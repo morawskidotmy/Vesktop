@@ -34,7 +34,10 @@ autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.fullChangelog = true;
 
-const isOutdated = autoUpdater.checkForUpdates().then(res => Boolean(res?.isUpdateAvailable)).catch(() => false);
+const isOutdated = autoUpdater
+    .checkForUpdates()
+    .then(res => Boolean(res?.isUpdateAvailable))
+    .catch(() => false);
 
 handle(IpcEvents.UPDATER_IS_OUTDATED, () => isOutdated);
 handle(IpcEvents.UPDATER_OPEN, async () => {
